@@ -1,14 +1,10 @@
 blinker==1.9.0
 certifi==2024.8.30
 charset-normalizer==3.4.0
-click @ file:///Users/builder/cbouss/perseverance-python-buildout/croot/click_1699237822453/work
 et_xmlfile==2.0.0
 Flask==3.1.0
 gunicorn==23.0.0
 idna==3.10
-itsdangerous @ file:///private/var/folders/nz/j6p8yfhx1mv_0grj5xl4650h0000gp/T/abs_00jdi1gu23/croot/itsdangerous_1716533346702/work
-Jinja2 @ file:///private/var/folders/k1/30mswbxs7r1g6zwn8y4fyt500000gp/T/abs_b15nuwux5r/croot/jinja2_1730902833938/work
-MarkupSafe @ file:///Users/builder/cbouss/perseverance-python-buildout/croot/markupsafe_1707339878470/work
 numpy==2.1.3
 openpyxl==3.1.5
 packaging==24.2
