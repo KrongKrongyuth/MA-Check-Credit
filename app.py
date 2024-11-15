@@ -1,8 +1,9 @@
-from flask import Flask, flash, redirect, render_template, request, url_for, session
+from flask import Flask, flash, redirect, render_template, request, url_for, session, send_file, after_this_request
 from function.pdf_to_text_path import extract_text_from_pdf_path
 from function.extract_details import extract_course_grades, extract_detail
 from function.classification import get_information
 from export_summary.fill_content import export_summary
+import os
 
 app = Flask(__name__)
 
@@ -105,12 +106,26 @@ def free():
 @app.route('/dowload', methods=['GET', 'POST'])
 def dowload_file():
     if session.get('F'):
-        export_summary(session.get('classifeid'), session.get('summary'))
-        flash("Download completed.", "warning")
-        return redirect(url_for('OverallCreditMA'))
+        file_path = export_summary(session.get('classifeid'), session.get('summary'))
+
+        @after_this_request
+        def remove_file(response):
+            try:
+                os.remove(file_path)
+            except Exception as e:
+                app.logger.error(f"Error removing file {file_path}: {e}")
+            return response
+        
+        flash("Download completed.", "success")
+        
+        return send_file(
+            file_path,
+            as_attachment=True,
+            download_name="BScMA_2561_ดาวน์โหลด.pdf"
+            )
     else:
         flash("Unable to download PDF because you have a grade F in your transcript.", "danger")
         return redirect(url_for('OverallCreditMA'))
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)

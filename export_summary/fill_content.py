@@ -1,33 +1,28 @@
 from PyPDF2 import PdfReader, PdfWriter
+
 import pandas as pd
 import os
-import platform
+import tempfile
+import uuid
 
-def get_download_path():
-    if platform.system() == "Windows":
-        # On Windows, the default download path is typically in the user's profile
-        return os.path.join(os.getenv("USERPROFILE"), "Downloads")
-    elif platform.system() == "Darwin":
-        # On macOS, the default download path is in the user's home directory
-        return os.path.join(os.path.expanduser("~"), "Downloads")
-    else:
-        # On Linux, the default download path is usually in the user's home directory
-        return os.path.join(os.path.expanduser("~"), "Downloads")
+def export_summary(classified_dict, credit_dict, export_path=None):
+    if export_path == None:
+        export_path = tempfile.gettempdir()
 
-def export_summary(classified_dict: dict, credit_dict:dict, export_path:str = get_download_path()):
-    print(export_path)
     field_dict = extract_fied_name(classified_dict, credit_dict)
     reader = PdfReader("./export_summary/BScMA_2561 แบบฟอร์มสำเร็จ คณิตศาสตร์.pdf")
     writer = PdfWriter()
     
     for page_num in range(len(reader.pages)):
         writer.add_page(reader.pages[page_num])
-        
         writer.update_page_form_field_values(
             writer.pages[page_num], field_dict
         )
-    with open(f"{export_path}{os.sep}BscMA_2561 แบบฟอร์มสำเร็จการศึกษา_ดาวน์โหลด.pdf", "wb") as output_stream:
+
+    output_file = os.path.join(export_path, f"BscMA_2561_ดาวน์โหลด_{uuid.uuid4().hex}.pdf")
+    with open(output_file, "wb") as output_stream:
         writer.write(output_stream)
+    return output_file
 
 def extract_fied_name(classified_dict:dict, credit_dict:dict):
     reader = PdfReader("./export_summary/BScMA_2561 แบบฟอร์มสำเร็จ คณิตศาสตร์.pdf")
