@@ -4,7 +4,6 @@
 # In[ ]:
 
 
-import PyPDF2
 import re
 from function.extrating import extract_courses
 
